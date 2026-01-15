@@ -1,0 +1,10 @@
+services:
+  db:
+    image: postgres
+    container_name: db
+    environment:
+      - POSTGRES_DB=payment
+      - POSTGRES_USER=capco
+      - POSTGRES_PASSWORD=capco
+    ports:
+      - 5432:5432

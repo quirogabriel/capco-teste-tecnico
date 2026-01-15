@@ -1,0 +1,20 @@
+POST http://localhost:3000/api/payment
+Content-Type: application/json
+
+{
+  "cpf": "12345678900",
+  "amount": 13,
+  "description": "Dummy Title",
+  "paymentMethod": "CREDIT_CARD"
+}
+
+###
+POST http://localhost:3000/api/payment/webhook
+Content-Type: application/json
+
+{
+  "type": "payment",
+  "data": {
+    "id": "141951377372"
+  }
+}
