@@ -70,6 +70,13 @@ export class PaymentController {
     return await this.createPaymentUseCase.execute(createPaymentDto);
   }
 
+  /**
+   *  Guard está funcionando, porém n consegui achar o local certo para pegar a secret_key
+   *  para validar a assinatura do webhook.
+   *  Caso queira testar, crie um webhook na plataforma, cole a url gerada pelo ngrok e dispare
+   *  uma requisição de teste.
+   */
+  // @UseGuards(WebhookSignatureGuard)
   @Post('/webhook')
   @HttpCode(200)
   async webhook(@Body() webhookDto: WebhookDTO): Promise<void> {
