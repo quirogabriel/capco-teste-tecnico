@@ -1,99 +1,265 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# API de Pagamentos - Teste Técnico Capco
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Este projeto é uma API RESTful para processamento de pagamentos, construída com **NestJS** como parte de uma avaliação técnica para a **Capco**. A aplicação integra-se ao **Mercado Pago** para processamento de pagamentos e utiliza **Prisma** como ORM para persistência em **PostgreSQL**.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+O projeto foi desenvolvido com foco em **arquitetura limpa**, **separação de responsabilidades** e **facilidade de evolução**, mantendo o domínio desacoplado de frameworks, protocolos HTTP e detalhes de infraestrutura.
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Funcionalidades
 
-## Project setup
+* **Criação de Pagamentos**: Suporte a pagamentos via **Cartão de Crédito** e **PIX**.
+* **Consulta de Pagamentos**: Busca por ID ou filtros combináveis.
+* **Atualização de Pagamentos**: Alteração de dados e status.
+* **Integração com Webhook do Mercado Pago**: Atualização assíncrona do status do pagamento.
+* **Validação de Assinatura de Webhook**: Garantia de autenticidade das notificações recebidas.
+* **Persistência com Prisma**: Migrações e acesso ao banco de dados PostgreSQL.
+* **Ambiente Containerizado**: Banco de dados provisionado via Docker Compose.
 
-```bash
-$ npm install
+---
+
+## Tecnologias Utilizadas
+
+* **Backend**: NestJS, TypeScript
+* **Banco de Dados**: PostgreSQL
+* **ORM**: Prisma
+* **Gateway de Pagamento**: SDK oficial do Mercado Pago
+* **Containerização**: Docker e Docker Compose
+* **Testes**: Jest
+
+---
+
+## Arquitetura
+
+O projeto segue princípios de **Clean Architecture**, separando claramente as responsabilidades:
+
+* `src/domain`
+
+  * Entidades de negócio
+  * Value Objects
+  * Regras de domínio
+  * Interfaces de repositórios
+
+* `src/application`
+
+  * Casos de uso
+  * Orquestração da lógica de negócio
+
+* `src/infrastructure`
+
+  * Controllers (HTTP)
+  * Implementações de repositórios
+  * Integrações externas (Mercado Pago, Prisma)
+
+> O domínio da aplicação não depende de frameworks ou protocolos HTTP, permitindo fácil evolução para workers, mensageria ou orquestradores como **Temporal**, sem impacto nas regras de negócio.
+
+---
+
+## Fluxo de Pagamento (Cartão de Crédito)
+
+1. Cliente cria um pagamento via API.
+2. A aplicação cria uma **Preference** no Mercado Pago.
+3. O cliente é redirecionado para o checkout do Mercado Pago.
+4. O pagamento é processado pelo Mercado Pago.
+5. O Mercado Pago envia um **webhook** para a aplicação.
+6. A aplicação valida a assinatura do webhook.
+7. O status do pagamento é atualizado no banco de dados.
+
+---
+
+## Começando
+
+### Pré-requisitos
+
+* Node.js (v18 ou superior)
+* npm
+* Docker e Docker Compose
+* ngrok (para testes de webhook)
+
+---
+
+### Instalação e Execução
+
+1. **Clone o repositório**
+
+   ```bash
+   git clone <url-do-repositorio>
+   cd capco-teste-tecnico
+   ```
+
+2. **Instale as dependências**
+
+   ```bash
+   npm install
+   ```
+
+3. **Configure as Variáveis de Ambiente**
+
+   Crie um arquivo `.env` na raiz do projeto:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   Variáveis necessárias:
+
+   | Variável          | Descrição                                             |
+   | ----------------- | ----------------------------------------------------- |
+   | DATABASE_URL      | String de conexão do PostgreSQL                       |
+   | MP_ACCESS_TOKEN   | Token de acesso do Mercado Pago                       |
+   | MP_WEBHOOK_URL    | URL pública (ngrok) para receber webhooks             |
+   | MP_WEBHOOK_SECRET | Chave secreta para validação de assinatura do webhook |
+
+---
+
+4. **Suba o banco de dados**
+
+   ```bash
+   docker compose up -d
+   ```
+
+5. **Execute as migrações**
+
+   ```bash
+   npx prisma migrate dev
+   ```
+
+6. **Exponha a aplicação com ngrok**
+
+   ```bash
+   ngrok http 3000
+   ```
+
+   Copie a URL HTTPS gerada e configure em `MP_WEBHOOK_URL`.
+
+7. **Inicie a aplicação**
+
+   ```bash
+   npm run start:dev
+   ```
+
+   A API estará disponível em `http://localhost:3000`.
+
+---
+
+## Endpoints
+
+### Criar Pagamento
+
+**POST /api/payment**
+
+```json
+{
+  "cpf": "12345678900",
+  "amount": 13,
+  "description": "Descrição da compra",
+  "paymentMethod": "CREDIT_CARD"
+}
 ```
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ npm run start
+### Buscar Pagamento por ID
 
-# watch mode
-$ npm run start:dev
+**GET /api/payment/:id**
 
-# production mode
-$ npm run start:prod
+---
+
+### Filtrar Pagamentos
+
+**GET /api/payment?status=PAID**
+
+---
+
+### Atualizar Pagamento
+
+**PUT /api/payment/:id**
+
+```json
+{
+  "status": "CREDIT_CARD"
+}
 ```
 
-## Run tests
+---
 
-```bash
-# unit tests
-$ npm run test
+### Webhook do Mercado Pago
 
-# e2e tests
-$ npm run test:e2e
+**POST /api/payment/webhook**
 
-# test coverage
-$ npm run test:cov
+Endpoint utilizado exclusivamente pelo Mercado Pago para envio de eventos assíncronos.
+
+Exemplo de payload:
+
+```json
+{
+  "action": "payment.updated",
+  "data": {
+    "id": "123456789"
+  },
+  "type": "payment"
+}
 ```
 
-## Deployment
+---
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## Testes
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+* Testes unitários para **casos de uso**
+* Testes unitários para **repositórios**, com Prisma mockado
+* Testes de **serviços externos**, mockando o SDK do Mercado Pago
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+---
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Decisões Arquiteturais
 
-## Resources
+* Uso de **Domain Errors** em vez de `HttpException` para manter o domínio desacoplado do protocolo HTTP.
+* Controllers atuam apenas como adaptadores de entrada.
+* Casos de uso concentram a lógica de negócio.
+* Infraestrutura pode ser substituída sem impacto no domínio.
 
-Check out a few resources that may come in handy when working with NestJS:
+---
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## Durabilidade do Workflow e Considerações Arquiteturais
 
-## Support
+A solução implementada garante durabilidade do estado do pagamento por meio da persistência imediata em banco de dados e do processamento assíncrono de eventos enviados pelo Mercado Pago via webhook.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+O fluxo funciona da seguinte forma:
 
-## Stay in touch
+* O pagamento é criado e persistido com status PENDING.
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+* A transação é registrada no Mercado Pago, utilizando uma external_reference única.
 
-## License
+* O Mercado Pago notifica a aplicação de forma assíncrona via webhook.
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
-# capco-teste-tecnico
+* A aplicação processa o evento recebido, valida o estado atual do pagamento e atualiza o status para PAID ou FAIL, respeitando as regras de negócio.
+
+Essa abordagem garante que:
+
+* O estado do pagamento não seja perdido em caso de falhas da aplicação.
+
+* O processamento seja idempotente, baseado no estado persistido.
+
+* O sistema opere com consistência eventual, adequada para integrações assíncronas com gateways de pagamento.
+
+* Evolução para Workflows Duráveis
+
+Em um cenário de produção com fluxos mais complexos, long-running workflows, políticas avançadas de retry, controle explícito de timeout e reentrância, este processo poderia ser evoluído para o uso de um orquestrador de workflows, como o Temporal.io.
+
+Nesse modelo, o Temporal seria responsável por:
+
+* Orquestrar o ciclo de vida do pagamento.
+
+* Persistir automaticamente o estado do workflow.
+
+* Garantir retries automáticos e retomada do fluxo após falhas.
+
+* Desacoplar completamente a lógica de orquestração da infraestrutura da aplicação.
+
+Para o contexto deste teste técnico, optou-se por uma solução mais simples e direta, mantendo a arquitetura preparada para essa evolução futura sem impacto nas regras de negócio já implementadas.
+
+---
+
+## Observações Finais
+
+Este projeto foi desenvolvido com foco em legibilidade, manutenibilidade e aderência a boas práticas de engenharia de software, simulando um cenário real de integração com gateway de pagamentos e processamento assíncrono via webhooks.
