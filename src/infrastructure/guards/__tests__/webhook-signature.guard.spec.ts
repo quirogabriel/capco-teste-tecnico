@@ -1,4 +1,4 @@
-import { WebhookSignatureGuard } from './webhook-signature.guard';
+import { WebhookSignatureGuard } from '../webhook-signature.guard';
 
 describe('WebhookSignatureGuard', () => {
   it('should be defined', () => {

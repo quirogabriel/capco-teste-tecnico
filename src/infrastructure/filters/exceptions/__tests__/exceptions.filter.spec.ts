@@ -1,4 +1,4 @@
-import { PaymentExceptionFilter } from './exceptions.filter';
+import { PaymentExceptionFilter } from '../exceptions.filter';
 
 describe('PaymentExceptionFilter', () => {
   it('should be defined', () => {
