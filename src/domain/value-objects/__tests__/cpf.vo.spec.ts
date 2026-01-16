@@ -14,12 +14,16 @@ describe('Cpf Value Object', () => {
   });
 
   it('should throw an error for an invalid CPF (wrong length)', () => {
-    expect(() => Cpf.create('123')).toThrow('Invalid CPF');
-    expect(() => Cpf.create('123456789090')).toThrow('Invalid CPF');
+    expect(() => Cpf.create('123')).toThrow('The CPF 123 is invalid.');
+    expect(() => Cpf.create('123456789090')).toThrow(
+      'The CPF 123456789090 is invalid.',
+    );
   });
 
   it('should throw an error for an invalid CPF (non-digits after formatting)', () => {
-    expect(() => Cpf.create('1234567890a')).toThrow('Invalid CPF');
+    expect(() => Cpf.create('1234567890a')).toThrow(
+      'The CPF 1234567890a is invalid.',
+    );
   });
 
   it('should return the correct formatted value', () => {

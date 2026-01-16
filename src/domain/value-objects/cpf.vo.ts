@@ -11,7 +11,7 @@ export class Cpf extends ValueObject<string> {
 
   public static create(cpf: string): Cpf {
     if (!this.validate(cpf)) {
-      throw new Error('Invalid CPF');
+      throw new CpfInvalidError(cpf);
     }
     return new Cpf(this.format(cpf));
   }
@@ -23,5 +23,12 @@ export class Cpf extends ValueObject<string> {
 
   public static format(cpf: string): string {
     return cpf.replace(/[^\d]/g, '');
+  }
+}
+
+export class CpfInvalidError extends Error {
+  constructor(cpf: string) {
+    super(`The CPF ${cpf} is invalid.`);
+    this.name = 'CpfInvalidError';
   }
 }

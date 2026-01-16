@@ -1,4 +1,4 @@
-import { Payment as PaymentPrisma } from '../../../../../generated/prisma/client';
+import { Payment } from '../../../../../generated/prisma/client';
 import {
   PaymentEntity,
   PaymentMethod,
@@ -9,7 +9,7 @@ import { Amount } from '../../../../domain/value-objects/amount.vo';
 import { Cpf } from '../../../../domain/value-objects/cpf.vo';
 
 export class PaymentPrismaMapper {
-  static toDomain(prismaPayment: PaymentPrisma): PaymentEntity {
+  static toDomain(prismaPayment: Payment): PaymentEntity {
     const paymentProps: PaymentProps = {
       cpf: Cpf.create(prismaPayment.cpf),
       amount: Amount.create(Number(prismaPayment.amount)),

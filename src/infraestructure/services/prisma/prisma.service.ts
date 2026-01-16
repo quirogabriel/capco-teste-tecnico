@@ -7,7 +7,7 @@ export class PrismaService extends PrismaClient {
   constructor() {
     const databaseUrl = process.env.DATABASE_URL;
     if (!databaseUrl) {
-        throw new Error('DATABASE_URL is not defined in environment variables.');
+      throw new Error('DATABASE_URL is not defined in environment variables.');
     }
     const adapter = new PrismaPg({
       connectionString: databaseUrl,

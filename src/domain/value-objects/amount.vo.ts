@@ -11,12 +11,19 @@ export class Amount extends ValueObject<number> {
 
   public static create(amount: number): Amount {
     if (!this.validate(amount)) {
-      throw new Error('Amount must be greater than 0');
+      throw new InvalidAmountError();
     }
     return new Amount(amount);
   }
 
   public static validate(amount: number): boolean {
     return amount > 0;
+  }
+}
+
+export class InvalidAmountError extends Error {
+  constructor() {
+    super(`Amount must be greater than 0.`);
+    this.name = 'InvalidAmountError';
   }
 }

@@ -69,30 +69,114 @@ describe('Payment Entity', () => {
     expect(payment.amount).toBeInstanceOf(Amount);
   });
 
-  it('should change status to PAID when paid() is called', () => {
+  it('should change status to PAID when paid() is called on a PENDING payment', () => {
     const payment = PaymentEntity.create({
-      id: '123',
-      cpf: '123.456.789-00',
-      description: 'Test Payment',
-      amount: 100.5,
-      paymentMethod: PaymentMethod.PIX,
       status: PaymentStatus.PENDING,
+      cpf: '123.456.789-00',
+      description: 'Test',
+      amount: 100,
+      paymentMethod: PaymentMethod.PIX,
     });
-    payment.paid();
+    const result = payment.paid();
+    expect(result).toBe(true);
     expect(payment.status).toBe(PaymentStatus.PAID);
   });
 
-  it('should change status to FAIL when fail() is called', () => {
+  it('should NOT change status when paid() is called on a PAID payment', () => {
     const payment = PaymentEntity.create({
-      id: '123',
+      status: PaymentStatus.PAID,
       cpf: '123.456.789-00',
-      description: 'Test Payment',
-      amount: 100.5,
+      description: 'Test',
+      amount: 100,
       paymentMethod: PaymentMethod.PIX,
-      status: PaymentStatus.PENDING,
     });
-    payment.fail();
+    const result = payment.paid();
+    expect(result).toBe(false);
+    expect(payment.status).toBe(PaymentStatus.PAID);
+  });
+
+  it('should change status to FAIL when fail() is called on a PENDING payment', () => {
+    const payment = PaymentEntity.create({
+      status: PaymentStatus.PENDING,
+      cpf: '123.456.789-00',
+      description: 'Test',
+      amount: 100,
+      paymentMethod: PaymentMethod.PIX,
+    });
+    const result = payment.fail();
+    expect(result).toBe(true);
     expect(payment.status).toBe(PaymentStatus.FAIL);
+  });
+
+  it('should NOT change status when fail() is called on a PAID payment', () => {
+    const payment = PaymentEntity.create({
+      status: PaymentStatus.PAID,
+      cpf: '123.456.789-00',
+      description: 'Test',
+      amount: 100,
+      paymentMethod: PaymentMethod.PIX,
+    });
+    const result = payment.fail();
+    expect(result).toBe(false);
+    expect(payment.status).toBe(PaymentStatus.PAID);
+  });
+
+  it('isFinal should return true only for PAID status', () => {
+    const pendingPayment = PaymentEntity.create({
+      status: PaymentStatus.PENDING,
+      cpf: '123.456.789-00',
+      description: 'Test',
+      amount: 100,
+      paymentMethod: PaymentMethod.PIX,
+    });
+    const paidPayment = PaymentEntity.create({
+      status: PaymentStatus.PAID,
+      cpf: '123.456.789-00',
+      description: 'Test',
+      amount: 100,
+      paymentMethod: PaymentMethod.PIX,
+    });
+    const failPayment = PaymentEntity.create({
+      status: PaymentStatus.FAIL,
+      cpf: '123.456.789-00',
+      description: 'Test',
+      amount: 100,
+      paymentMethod: PaymentMethod.PIX,
+    });
+
+    expect(pendingPayment.isFinal()).toBe(false);
+    expect(paidPayment.isFinal()).toBe(true);
+    expect(failPayment.isFinal()).toBe(false);
+  });
+
+  it('should update status via updateStatus method', () => {
+    const payment = PaymentEntity.create({
+      status: PaymentStatus.PENDING,
+      cpf: '123.456.789-00',
+      description: 'Test',
+      amount: 100,
+      paymentMethod: PaymentMethod.PIX,
+    });
+
+    const result = payment.updateStatus(PaymentStatus.PAID);
+
+    expect(result).toBe(true);
+    expect(payment.status).toBe(PaymentStatus.PAID);
+  });
+
+  it('should not update status via updateStatus if already in the target state', () => {
+    const payment = PaymentEntity.create({
+      status: PaymentStatus.PAID,
+      cpf: '123.456.789-00',
+      description: 'Test',
+      amount: 100,
+      paymentMethod: PaymentMethod.PIX,
+    });
+
+    const result = payment.updateStatus(PaymentStatus.PAID);
+
+    expect(result).toBe(false);
+    expect(payment.status).toBe(PaymentStatus.PAID);
   });
 
   it('should set externalReference correctly', () => {

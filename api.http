@@ -1,11 +1,30 @@
+### Create payment
 POST http://localhost:3000/api/payment
 Content-Type: application/json
 
 {
   "cpf": "12345678900",
   "amount": 13,
-  "description": "Dummy Title",
+  "description": "adsa",
   "paymentMethod": "CREDIT_CARD"
+}
+
+
+### Get by ID
+GET http://localhost:3000/api/payment/7b243882-c7c4-4531-ad8b-94ed84d23c7b
+Content-Type: application/json
+
+
+### Get by filter
+GET http://localhost:3000/api/payment?description=dummy%20title&status=FAIL
+
+
+### Update payment
+PUT http://localhost:3000/api/payment/7b243882-c7c4-4531-ad8b-94ed84d23c7b
+Content-Type: application/json
+
+{
+  "status": "PAID"
 }
 
 ###

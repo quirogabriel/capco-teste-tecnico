@@ -110,4 +110,41 @@ export class PaymentEntity extends Entity<PaymentProps> {
   isFinal(): boolean {
     return this.props.status === PaymentStatus.PAID;
   }
+
+  updateStatus(newStatus: PaymentStatus): boolean {
+    if (this.status === newStatus) {
+      return false;
+    }
+
+    if (newStatus === PaymentStatus.PAID) {
+      return this.paid();
+    }
+
+    if (newStatus === PaymentStatus.FAIL) {
+      return this.fail();
+    }
+
+    return false;
+  }
+}
+
+export class PaymentNotFoundError extends Error {
+  constructor(id: string) {
+    super(`Payment not found: ${id}`);
+    this.name = 'PaymentNotFoundError';
+  }
+}
+
+export class PaymentAlreadyPaidError extends Error {
+  constructor(id: string) {
+    super(`Payment already paid: ${id}`);
+    this.name = 'PaymentAlreadyPaidError';
+  }
+}
+
+export class PaymentCannotFailError extends Error {
+  constructor(id: string) {
+    super(`Payment already failed: ${id}`);
+    this.name = 'PaymentCannotFailError';
+  }
 }

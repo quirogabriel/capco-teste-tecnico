@@ -8,3 +8,8 @@ services:
       - POSTGRES_PASSWORD=capco
     ports:
       - 5432:5432
+    volumes:
+      - ./db_data:/var/lib/postgresql
+
+volumes:
+  db_data:

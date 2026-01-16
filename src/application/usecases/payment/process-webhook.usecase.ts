@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { PaymentEntity } from '../../../domain/entities/payment.entity';
 import { IPaymentRepository } from '../../../domain/repositories/payment.repository.interface';
-import { WebhookDTO } from '../../../infraestructure/controllers/payment/dto/webhook.dto';
+import { WebhookDTO } from '../../../infraestructure/controllers/payment/dto/request/webhook.dto';
 import {
   IMercadoPagoService,
   MercadoPagoPayment,
@@ -23,18 +23,34 @@ export class ProcessWebhookUseCase extends UseCase<WebhookDTO, void> {
 
   async execute(input: WebhookDTO): Promise<void> {
     this.logger.log(`Processing webhook: ${JSON.stringify(input)}`);
-    if (input?.type !== 'payment' && input?.topic !== 'payment') {
+
+    if (!this.isValidWebhook(input)) {
+      this.logger.warn(
+        `Invalid webhook type or topic: ${JSON.stringify(input)}`,
+      );
       return;
     }
 
-    const mpPaymentId = Number(input?.data?.id ?? input?.resource);
-    const mpPayment = await this.mercadoPagoService.getPayment(mpPaymentId);
+    const mpPayment = await this.fetchMercadoPagoPayment(input);
+
     this.logger.log(
       `Received Mercado Pago payment: ${JSON.stringify(mpPayment)}`,
     );
+
+    const payment = await this.retrieveAndValidatePayment(mpPayment);
+    if (!payment) {
+      return;
+    }
+
+    await this.handlePaymentUpdateAndSave(payment, mpPayment);
+  }
+
+  private async retrieveAndValidatePayment(
+    mpPayment: MercadoPagoPayment,
+  ): Promise<PaymentEntity | null> {
     if (!mpPayment?.external_reference) {
       this.logger.warn('Missing external_reference in Mercado Pago payment');
-      return;
+      return null;
     }
 
     const payment = await this.paymentRepository.findByExternalReference(
@@ -45,14 +61,21 @@ export class ProcessWebhookUseCase extends UseCase<WebhookDTO, void> {
       this.logger.warn(
         `Payment with external_reference ${mpPayment.external_reference} not found`,
       );
-      return;
+      return null;
     }
 
-    if (payment?.isFinal()) {
+    if (payment.isFinal()) {
       this.logger.log(`Payment ${payment.id} already finalized`);
-      return;
+      return null;
     }
 
+    return payment;
+  }
+
+  private async handlePaymentUpdateAndSave(
+    payment: PaymentEntity,
+    mpPayment: MercadoPagoPayment,
+  ): Promise<void> {
     const updated = this.updatePaymentStatus(payment, mpPayment);
 
     if (!updated) {
@@ -84,5 +107,14 @@ export class ProcessWebhookUseCase extends UseCase<WebhookDTO, void> {
         );
         return false;
     }
+  }
+
+  private isValidWebhook(input: WebhookDTO): boolean {
+    return input?.type === 'payment';
+  }
+
+  private async fetchMercadoPagoPayment(input: WebhookDTO) {
+    const mpPaymentId = Number(input?.data?.id ?? input?.resource);
+    return await this.mercadoPagoService.getPayment(mpPaymentId);
   }
 }
