@@ -4,7 +4,7 @@ import {
   PaymentNotFoundError,
 } from '../../../domain/entities/payment.entity';
 import { IPaymentRepository } from '../../../domain/repositories/payment.repository.interface';
-import { FindByIdDto } from '../../../infraestructure/controllers/payment/dto/request/find-by-id.dto';
+import { FindByIdDto } from '../../../infrastructure/controllers/payment/dto/request/find-by-id.dto';
 import { UseCase } from '../core/usecase';
 
 @Injectable()

@@ -5,11 +5,11 @@ import {
   PaymentStatus,
 } from '../../../../domain/entities/payment.entity';
 import { IPaymentRepository } from '../../../../domain/repositories/payment.repository.interface';
-import { CreatePaymentDTO } from '../../../../infraestructure/controllers/payment/dto/request/create-payment.dto';
+import { CreatePaymentDTO } from '../../../../infrastructure/controllers/payment/dto/request/create-payment.dto';
 import {
   IMercadoPagoService,
   PreferenceCreationResponse,
-} from '../../../../infraestructure/services/mercado-pago/mercado-pago.service.interface';
+} from '../../../../infrastructure/services/mercado-pago/mercado-pago.service.interface';
 import { CreatePaymentUseCase } from '../create-payment.usecase';
 
 const mockPaymentRepository: jest.Mocked<IPaymentRepository> = {

@@ -4,11 +4,11 @@ import {
   PaymentStatus,
 } from '../../../../domain/entities/payment.entity';
 import { IPaymentRepository } from '../../../../domain/repositories/payment.repository.interface';
-import { WebhookDTO } from '../../../../infraestructure/controllers/payment/dto/request/webhook.dto';
+import { WebhookDTO } from '../../../../infrastructure/controllers/payment/dto/request/webhook.dto';
 import {
   IMercadoPagoService,
   MercadoPagoPayment,
-} from '../../../../infraestructure/services/mercado-pago/mercado-pago.service.interface';
+} from '../../../../infrastructure/services/mercado-pago/mercado-pago.service.interface';
 import { ProcessWebhookUseCase } from '../process-webhook.usecase';
 
 const mockPaymentRepository = {

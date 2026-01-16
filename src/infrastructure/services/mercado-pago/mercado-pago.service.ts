@@ -2,12 +2,12 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { randomUUID } from 'crypto';
 import { MercadoPagoConfig, Payment, Preference } from 'mercadopago';
-import { PaymentEntity } from '../../../domain/entities/payment.entity.js';
+import { PaymentEntity } from '../../../domain/entities/payment.entity';
 import {
   IMercadoPagoService,
   MercadoPagoPayment,
   PreferenceCreationResponse,
-} from './mercado-pago.service.interface.js';
+} from './mercado-pago.service.interface';
 
 @Injectable()
 export class MercadoPagoService implements IMercadoPagoService {

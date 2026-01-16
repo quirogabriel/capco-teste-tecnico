@@ -1,11 +1,11 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { PaymentEntity } from '../../../domain/entities/payment.entity';
 import { IPaymentRepository } from '../../../domain/repositories/payment.repository.interface';
-import { WebhookDTO } from '../../../infraestructure/controllers/payment/dto/request/webhook.dto';
+import { WebhookDTO } from '../../../infrastructure/controllers/payment/dto/request/webhook.dto';
 import {
   IMercadoPagoService,
   MercadoPagoPayment,
-} from '../../../infraestructure/services/mercado-pago/mercado-pago.service.interface';
+} from '../../../infrastructure/services/mercado-pago/mercado-pago.service.interface';
 import { UseCase } from '../core/usecase';
 
 @Injectable()

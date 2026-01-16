@@ -1,8 +1,5 @@
-import {
-  PaymentMethod,
-  PaymentStatus,
-} from '../../../generated/prisma/enums.js';
-import { PaymentEntity } from '../entities/payment.entity.js';
+import { PaymentMethod, PaymentStatus } from '../../../generated/prisma/enums';
+import { PaymentEntity } from '../entities/payment.entity';
 
 export type FilterPaymentInput = {
   id?: string;

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { PaymentModule } from './infraestructure/modules/payment/payment.module.js';
-import { PrismaModule } from './infraestructure/services/prisma/prisma.module.js';
+import { PaymentModule } from './infrastructure/modules/payment/payment.module';
+import { PrismaModule } from './infrastructure/services/prisma/prisma.module';
 
 @Module({
   imports: [

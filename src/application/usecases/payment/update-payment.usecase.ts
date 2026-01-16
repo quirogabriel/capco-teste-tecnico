@@ -6,7 +6,7 @@ import {
   PaymentStatus,
 } from '../../../domain/entities/payment.entity';
 import { IPaymentRepository } from '../../../domain/repositories/payment.repository.interface';
-import { PaymentResponseDTO } from '../../../infraestructure/controllers/payment/dto/response/payment-response.dto';
+import { PaymentResponseDTO } from '../../../infrastructure/controllers/payment/dto/response/payment-response.dto';
 import { UseCase } from '../core/usecase';
 
 export type UpdatePaymentInput = {

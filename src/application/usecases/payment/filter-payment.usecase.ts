@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PaymentEntity } from '../../../domain/entities/payment.entity';
 import { IPaymentRepository } from '../../../domain/repositories/payment.repository.interface';
-import { FilterPaymentDto } from '../../../infraestructure/controllers/payment/dto/request/filter-payment.dto';
+import { FilterPaymentDto } from '../../../infrastructure/controllers/payment/dto/request/filter-payment.dto';
 import { UseCase } from '../core/usecase';
 
 @Injectable()

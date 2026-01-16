@@ -4,8 +4,8 @@ import {
   PaymentMethod,
 } from '../../../domain/entities/payment.entity';
 import { IPaymentRepository } from '../../../domain/repositories/payment.repository.interface';
-import { CreatePaymentDTO } from '../../../infraestructure/controllers/payment/dto/request/create-payment.dto';
-import { IMercadoPagoService } from '../../../infraestructure/services/mercado-pago/mercado-pago.service.interface';
+import { CreatePaymentDTO } from '../../../infrastructure/controllers/payment/dto/request/create-payment.dto';
+import { IMercadoPagoService } from '../../../infrastructure/services/mercado-pago/mercado-pago.service.interface';
 import { UseCase } from '../core/usecase';
 
 export type CreatePaymentOutput = {
