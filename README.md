@@ -242,7 +242,9 @@ Essa abordagem garante que:
 
 * O sistema opere com consistência eventual, adequada para integrações assíncronas com gateways de pagamento.
 
-* Evolução para Workflows Duráveis
+---
+
+## Evolução para Workflows Duráveis
 
 Em um cenário de produção com fluxos mais complexos, long-running workflows, políticas avançadas de retry, controle explícito de timeout e reentrância, este processo poderia ser evoluído para o uso de um orquestrador de workflows, como o Temporal.io.
 
